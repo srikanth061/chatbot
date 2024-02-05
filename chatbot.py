@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-from datetime import datetime
+from datetime import datetime,timedelta,timezone
 from dotenv import load_dotenv
 import os
 
@@ -57,7 +57,11 @@ def chatbot():
         chats.history = []
     user_query = st.chat_input("Enter your question here...")
     if user_query != None:
-        current_time = datetime.now().strftime("%H:%M")
+        # current_time = datetime.now().strftime("%H:%M")
+        UTC_time = datetime.now(timezone.utc)
+        IST_offset = timedelta(hours=5, minutes=30)
+        IST_time = UTC_time + IST_offset
+        current_time = IST_time.strftime("%H:%M")
         response = send_query(user_query)
         cleaned_response = response.text.replace("\\n", "<br>").replace("\n", "").replace('"',"")
         chats.history.append({"query": user_query, "response": cleaned_response, "time":current_time})

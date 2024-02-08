@@ -3,11 +3,36 @@ import requests
 from datetime import datetime,timedelta,timezone
 from dotenv import load_dotenv
 import os
+import sqlite3
 
 
 load_dotenv()
 
 Query_url = os.getenv("QUERY_URL")
+db = rf"c:\Users\SrikanthBachannagari\Documents\Projects\SQLite\chatbot.db"
+conn = sqlite3.connect(db)
+c = conn.cursor()
+
+
+def log_user_login(name, email,IST_time):
+    print(name, email,IST_time,"KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK")
+    c.execute(f"INSERT INTO user (name, email, logged_in_time) VALUES (?,?,?)",(name,email,IST_time))
+    conn.commit()
+
+def display_login():
+    st.title("Chatbot NPS - Login")
+    name = st.text_input("Enter your name:")
+    email = st.text_input("Enter your email:")
+    UTC_time = datetime.now(timezone.utc)
+    IST_offset = timedelta(hours=5, minutes=30)
+    IST_time = UTC_time + IST_offset
+    if st.button("Log in"):
+        if not name or not email:
+            st.warning("Please enter both name and email.")
+            st.stop()
+        log_user_login(name, email, IST_time)
+        st.success("Logged in successfully! You can now use the chatbot.")
+        st.session_state.logged_in = True
 
 def send_query(query):
     data = {"query": query}
@@ -30,6 +55,10 @@ def display_chats(chats):
             st.markdown(f"<span style='font-size: smaller;'>{chat['time']}</span>", unsafe_allow_html=True)
 
 def chatbot():
+    
+    if 'logged_in' not in st.session_state:
+        display_login()
+        st.stop()
     header = st.container()
     header.title("Chatbot NPS")
     header.write("""<div class='fixed-header'/>""", unsafe_allow_html=True)

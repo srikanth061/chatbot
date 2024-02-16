@@ -31,7 +31,7 @@ def display_chats(chats):
 
 def chatbot():
     header = st.container()
-    header.title("Chatbot INVESTOPEDIA")
+    header.title("Chatbot Investopedia")
     header.write("""<div class='fixed-header'/>""", unsafe_allow_html=True)
 
     st.markdown(

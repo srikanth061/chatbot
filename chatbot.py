@@ -101,12 +101,3 @@ def chatbot():
         chats.history.pop(0)
         
 chatbot()
-
-
-
-
-
-  
-
-
-
